@@ -112,7 +112,7 @@ namespace chitraware {
 		}
 
 		static void frameBufferCallback(GLFWwindow* window, int _width, int _height) {
-			glViewport(0, 0, _width, _width);
+			glViewport(0, 0, _width, _height);
 		}
 
 	};

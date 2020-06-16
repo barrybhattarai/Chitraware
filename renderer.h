@@ -1,7 +1,19 @@
 #pragma once
-class Renderer
-{
-public:
-	Renderer();
-};
+#include<GL/glew.h>
 
+namespace chitraware {
+	class Renderer
+	{
+	private:
+		
+
+	public:
+		Renderer();
+		GLuint ID;
+		void link();
+	};
+
+
+
+
+}

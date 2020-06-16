@@ -4,7 +4,11 @@
 #include<glm/glm.hpp>
 #include<glm/gtc/type_ptr.hpp>
 #include<glm/ext/matrix_transform.hpp>
- static const GLchar* vShaderSource = R"glsl(
+#include "shader.h"
+#include "renderer.h"
+ 
+
+const GLchar* vShaderSource = R"glsl(
 	#version 440 core
 layout(location=0) in vec3 position;
 uniform mat4 transform;
@@ -15,7 +19,8 @@ color = vec4(1,1,1,1);
 }
 )glsl";
 
- static const GLchar* fShaderSource = R"glsl(
+
+const GLchar* fShaderSource = R"glsl(
 #version 440 core
 out vec4 fragColor;
 in vec4 color;
@@ -67,19 +72,18 @@ int main() {
 	glBindVertexArray(vao);
 
 	//shader compilation part 1. vertex shader
-	GLuint vShader;
-	vShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vShader, 1, &vShaderSource, NULL);
-	glCompileShader(vShader);
+	Shader vShader(GL_VERTEX_SHADER, vShaderSource);
+	
 	// fragment shader
-	GLuint fShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fShader, 1, &fShaderSource, NULL);
-	glCompileShader(fShader);
+	Shader fShader(GL_FRAGMENT_SHADER, fShaderSource);
+
+	
 	//shader program
-	GLuint program = glCreateProgram();
-	glAttachShader(program, vShader);
-	glAttachShader(program, fShader);
-	glLinkProgram(program);
+	Renderer program;
+	fShader.attach(program.ID);
+	vShader.attach(program.ID);
+	program.link();
+
 
 	//
 	GLuint vbo;
@@ -96,25 +100,19 @@ int main() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof elements, elements, GL_STATIC_DRAW);
 
 
-		glUseProgram(program);
+		glUseProgram(program.ID);
 
 	//transform matrix
 	glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 		//transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
 	transform = glm::rotate(transform, (GLfloat)1.0, glm::vec3(0, 0, 1.0));
-		GLuint transformLoc = glGetUniformLocation(program, "transform");
+		GLuint transformLoc = glGetUniformLocation(program.ID, "transform");
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
 
 
 	while (!glfwWindowShouldClose(appWindow.window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-		// transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-		//transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
-		//transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-		//unsigned int transformLoc = glGetUniformLocation(program, "transform");
-		//glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
-
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 		glfwSwapBuffers(appWindow.window);
 		glfwPollEvents();
@@ -126,4 +124,6 @@ int main() {
 	return 0;
 
 }
+
+
 
