@@ -7,16 +7,18 @@
 #include "shader.h"
 #include "renderer.h"
 #include "vertexBuffer.h"
- 
+#include <cmath>
+
 
 const GLchar* vShaderSource = R"glsl(
 	#version 440 core
 layout (location=0) in vec3 position;
 uniform  mat4 transform;
+layout (location =1) in vec3 colorData;
  out vec4 color;
 void main(){
 gl_Position=  transform * vec4(position, 1);
-color = vec4(1,1,1,1);
+color = vec4(colorData,1);
 }
 )glsl";
 
@@ -32,10 +34,16 @@ fragColor = color;
 
 
 GLfloat vertdata[] = {
-	-0.5,0.5,0,
-	-0.5,-0.5,0,
-	0.5,-0.5,0,
-	0.5,0.5,0
+	// front
+	-1.0, -1.0,  1.0,
+	 1.0, -1.0,  1.0,
+	 1.0,  1.0,  1.0,
+	-1.0,  1.0,  1.0,
+	// back
+	-1.0, -1.0, -1.0,
+	 1.0, -1.0, -1.0,
+	 1.0,  1.0, -1.0,
+	-1.0,  1.0, -1.0
 };
 
 GLfloat cube_colors[] = {
@@ -64,8 +72,24 @@ int main() {
 	
 	//element data//which vertices will be painted;
 	GLuint elements[] = {
-		0,1,2,
-		0,2,3
+		// front
+		0, 1, 2,
+		2, 3, 0,
+		// right
+		1, 5, 6,
+		6, 2, 1,
+		// back
+		7, 6, 5,
+		5, 4, 7,
+		// left
+		4, 0, 3,
+		3, 7, 4,
+		// bottom
+		4, 5, 1,
+		1, 0, 4,
+		// top
+		3, 2, 6,
+		6, 7, 3
 	};
 
 
@@ -93,6 +117,11 @@ int main() {
 	
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,NULL, NULL);
 	glEnableVertexAttribArray(0);
+
+	//color
+	VertexBuffer col(cube_colors, sizeof cube_colors);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, NULL, NULL);
+	glEnableVertexArrayAttrib(vao, 1);
 	
 	//elmement object variable
 	GLuint ebo;
@@ -105,7 +134,7 @@ int main() {
 
 	//transform matrix
 		glm::mat4 transform = glm::mat4(1.0f);
-		glm::mat4 scale = glm::scale(glm::vec3(2.0, 2.0, 2.0));
+		glm::mat4 scale = glm::scale(glm::vec3(1.0, 1.0, 1.0));
 		glm::mat4 rotate = glm::rotate((float)0.0, glm::vec3(0, 0, 1));
 		glm::mat4 translate =  glm::translate(glm::vec3(0, 0, 0));
 		glm::mat4 modelMatrix = translate * rotate * scale;
@@ -115,9 +144,7 @@ int main() {
 			glm::vec3(0, 0, 0), // and looks at the origin
 			glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
 		);
-
-		glm::mat4 projectionMatrix = glm::perspective(glm::radians(60.0f), (float)appWindow.width / (float)appWindow.height, 0.1f, 100.0f);
-		transform =   projectionMatrix* viewMatrix* modelMatrix;
+	
 
 		GLuint transformLoc = glGetUniformLocation(program.ID, "transform");
 
@@ -129,17 +156,22 @@ int main() {
 
 	while (!glfwWindowShouldClose(appWindow.window)) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-		rotate = glm::rotate((float)glfwGetTime(), glm::vec3(0, 0, 1));
+		GLint w, h;
+		glfwGetFramebufferSize(appWindow.window, &w, &h);
+		rotate = glm::rotate(sinf( glfwGetTime()), glm::vec3(0, 0, 1));
+		glm::mat4 projectionMatrix = glm::perspective(glm::radians(60.0f), (float)w/ (float)h, 0.1f, 100.0f);
+
 
 		 modelMatrix = translate * rotate * scale;
 
+		
 		transform = projectionMatrix * viewMatrix * modelMatrix;
 		//transform = glm::mat4(1.0f);
 		
 		//GLuint transformLoc = glGetUniformLocation(program.ID, "transform");
 		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, NULL);
 		glfwSwapBuffers(appWindow.window);
 		glfwPollEvents();
 	}
