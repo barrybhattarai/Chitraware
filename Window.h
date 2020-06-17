@@ -11,14 +11,15 @@ namespace chitraware {
 
 
 	private:
-		int width; //width of the window.
-		int height;  // height of the window.
+		
 		GLFWmonitor* monitor = NULL; // monitor object of the current window.
 		const GLFWvidmode* vidMode = NULL; // video mode of the current monitor.
 		bool isFullScreen;  // whether the window is fullscreen.
 		const char* title; // title of the window.
 		static Window* instance;
 	public:
+		int width; //width of the window.
+		int height;  // height of the window.
 		GLFWwindow* window;// the glfw window object.
 
 		Window(int _width, int _height, const char* _title, bool _isFullScreen) {
@@ -50,7 +51,7 @@ namespace chitraware {
 			glfwSetFramebufferSizeCallback(window, frameBufferCallback);
 			glClearColor(0,0,0,1);
 			glEnable(GLFW_SAMPLES);
-			glEnable(GL_DEPTH);
+			glEnable(GL_DEPTH_TEST);
 		}
 
 
