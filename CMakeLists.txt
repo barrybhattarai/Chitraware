@@ -13,4 +13,4 @@ add_executable(Chitraware main.cpp renderer.cpp shader.cpp vertexBuffer.cpp)
 target_link_libraries(Chitraware PRIVATE glfw OpenGL ${GLEW_LIBRARIES} )
 
 
-target_include_directories(Chitraware PUBLIC ${GLEW_INCLUDE_DIRS})
+target_include_directories(Chitraware PRIVATE ${GLEW_INCLUDE_DIRS})

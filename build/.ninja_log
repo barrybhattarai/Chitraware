@@ -1,0 +1,6 @@
+# ninja log v5
+3	521	1691321022067097194	CMakeFiles/Chitraware.dir/shader.cpp.o	2baa56f49c6ff0c6
+3	1146	1691321022690101667	CMakeFiles/Chitraware.dir/vertexBuffer.cpp.o	8daefd91ca6f341d
+2	1402	1691321022947103512	CMakeFiles/Chitraware.dir/renderer.cpp.o	d40b79d8d46f395c
+22	5268	1691321160121998957	CMakeFiles/Chitraware.dir/main.cpp.o	12ecbe12dc3ec97a
+5269	5838	1691321160693002591	Chitraware	fd109b8d152eae45
