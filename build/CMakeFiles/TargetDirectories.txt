@@ -1,3 +1,0 @@
-/home/barry/CodeParty/Chitraware/build/CMakeFiles/Chitraware.dir
-/home/barry/CodeParty/Chitraware/build/CMakeFiles/edit_cache.dir
-/home/barry/CodeParty/Chitraware/build/CMakeFiles/rebuild_cache.dir

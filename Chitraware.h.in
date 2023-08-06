@@ -1,0 +1,4 @@
+#define CHITRAWARE_BUILD_TYPE @CMAKE_BUILD_TYPE@
+
+#define VAL(str) #str
+#define TOSTRING(str) VAL(str)

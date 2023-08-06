@@ -8,7 +8,8 @@
 #include "renderer.h"
 #include "vertexBuffer.h"
 #include <cmath>
-
+#include <Chitrware.h>
+#include <string>
 const GLchar *vShaderSource = R"glsl(
 	#version 440 core
 layout (location=0) in vec3 position;
@@ -60,7 +61,7 @@ int main()
 {
 	std::cout << "Starting application" << std::endl;
 
-	Window appWindow = Window(640, 640, "Chitraware", false);
+	Window appWindow = Window(640, 640, std::string("Chitraware ").append(TOSTRING(CHITRAWARE_BUILD_TYPE)).c_str() ,false);
 
 	// element data//which vertices will be painted;
 	GLuint elements[] = {
